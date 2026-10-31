@@ -10,3 +10,4 @@ wheels/
 .pytest_cache/
 dbt/target/
 dbt/logs/
+dbt/dbt_packages/

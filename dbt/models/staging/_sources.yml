@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: bronze
+    schema: public
+    tables:
+      - name: companies
+      - name: prices_daily
+      - name: financials_raw

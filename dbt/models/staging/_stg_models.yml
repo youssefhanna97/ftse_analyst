@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: stg_companies
+    description: "One row per stock in the universe."
+    columns:
+      - name: ticker
+        description: "Yahoo Finance ticker, e.g. SHEL.L"
+        data_tests:
+          - unique
+          - not_null
+      - name: sector
+        data_tests:
+          - not_null
+
+  - name: stg_prices_daily
+    description: "Daily prices in GBP (pounds), one row per ticker per trading day, from 2000."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker, trade_date]
+    columns:
+      - name: ticker
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_companies')
+                field: ticker
+      - name: trade_date
+        data_tests:
+          - not_null
+      - name: close_price
+        description: "Actual closing price in GBP. Use adj_close_price for returns."
+        data_tests:
+          - not_null
+  
