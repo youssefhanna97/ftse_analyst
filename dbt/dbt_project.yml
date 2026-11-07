@@ -15,6 +15,17 @@ models:
     staging:
       +materialized: view
       +schema: silver
+    intermediate:
+      +materialized: view
+      +schema: silver
     marts:
       +materialized: table
       +schema: gold
+
+seeds:
+  ftse_analyst:
+    +schema: silver
+
+vars:
+  annual_report_lag_months: 4
+  interim_report_lag_months: 3

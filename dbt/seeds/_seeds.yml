@@ -1,0 +1,14 @@
+version: 2
+
+seeds:
+  - name: line_item_map
+    description: "Maps vendor line items (yfinance) to our standard item names."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [statement, source_line_item]
+    columns:
+      - name: item
+        data_tests:
+          - unique
+          - not_null

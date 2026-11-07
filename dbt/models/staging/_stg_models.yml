@@ -34,4 +34,24 @@ models:
         description: "Actual closing price in GBP. Use adj_close_price for returns."
         data_tests:
           - not_null
-  
+
+  - name: stg_financials
+    description: "Curated fundamentals in long format, original reporting currency, standard item names."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker, period_type, period_end, item]
+    columns:
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('line_item_map')
+                field: item
+      - name: value
+        data_tests:
+          - not_null
+      - name: currency
+        data_tests:
+          - not_null

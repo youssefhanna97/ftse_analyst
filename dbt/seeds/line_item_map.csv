@@ -1,0 +1,11 @@
+statement,source_line_item,item,description
+income,Total Revenue,revenue,Total revenue for the period
+income,Net Income,net_income,Net income for the period
+income,EBITDA,ebitda,Earnings before interest tax depreciation and amortisation (not for banks)
+income,Net Interest Income,net_interest_income,Banks: interest earned minus interest paid
+balance,Stockholders Equity,total_equity,Shareholders equity
+balance,Tangible Book Value,tangible_book_value,Equity minus goodwill and intangible assets
+balance,Total Debt,total_debt,Borrowings including leases
+balance,Cash And Cash Equivalents,cash,Cash and cash equivalents
+balance,Ordinary Shares Number,shares_outstanding,Ordinary shares in issue at period end
+cashflow,Free Cash Flow,free_cash_flow,Operating cash flow minus capital expenditure
