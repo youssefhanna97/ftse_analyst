@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: fct_fundamental_metrics
+    description: "Annual fundamental metrics per company, in decimals (0.12 = 12%). Use report_date for point-in-time joins."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker, period_end]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "roe is null or roe between -2 and 2"
+          config:
+            severity: warn
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "revenue_growth is null or revenue_growth between -0.9 and 5"
+          config:
+            severity: warn
+    columns:
+      - name: roe
+        description: "Return on equity: net income / shareholders equity. NULL if equity <= 0."
+      - name: rote
+        description: "Return on tangible equity: net income / tangible book value. Key quality metric for banks."
+      - name: net_debt_to_ebitda
+        description: "(Total debt - cash) / EBITDA. NULL if EBITDA <= 0. Not applicable to banks."
+      - name: revenue_growth
+        description: "Year-on-year revenue growth. NULL if the prior year is missing."
+      - name: net_interest_income_growth
+        description: "Year-on-year net interest income growth. The growth measure for banks."
+  - name: fct_valuation_daily
+    description: "Daily valuation per stock using only fundamentals public on that date. Ratios use reporting-currency market cap."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker, trade_date]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "fundamentals_report_date <= trade_date"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "pe_ratio is null or pe_ratio between 0 and 200"
+          config:
+            severity: warn
+    columns:
+      - name: units_per_gbp
+        description: "FX rate used: units of reporting currency per 1 GBP (1 for GBP reporters)."
+        data_tests:
+          - not_null
+      - name: market_cap_gbp
+        description: "Close price x shares outstanding, in GBP."
+        data_tests:
+          - not_null
+      - name: pe_ratio
+        description: "Market cap / net income, both in reporting currency. NULL if earnings <= 0."
+      - name: ev_to_ebitda
+        description: "Enterprise value / EBITDA. Not applicable to banks." 

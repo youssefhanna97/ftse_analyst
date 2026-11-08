@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: int_financials_pit
+    description: "Fundamentals pivoted wide, one row per ticker per period, with the estimated date the market knew them."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker, period_type, period_end]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "report_date > period_end"
+    columns:
+      - name: report_date
+        description: "Estimated public release date. Use this, not period_end, when joining to prices, to avoid lookahead bias."
+        data_tests:
+          - not_null
+      - name: report_date_source
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["estimated_lag", "actual"]

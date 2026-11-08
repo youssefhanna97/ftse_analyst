@@ -12,3 +12,23 @@ seeds:
         data_tests:
           - unique
           - not_null
+  - name: fx_rates_monthly
+    description: "Monthly average spot rates: units of foreign currency per 1 GBP. Source: Bank of England (XUMAUSS, XUMAERS)."
+    config:
+      column_types:
+        month: date
+        currency: text
+        units_per_gbp: numeric
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [month, currency]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "units_per_gbp > 0"
+    columns:
+      - name: currency
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["USD", "EUR"]
